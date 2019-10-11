@@ -1,7 +1,7 @@
 # MiAI_Coloring
 Use Auto Encoder model to paint the black and white photos
 
-Article link:  http://ainoodle.tech/2019/10/03/di-buon-chung-khoan-cung-mi-ai-xay-model-lstm-du-doan-gia-chung-khoan-vietcombank-cuoi-nam-2019/
+Article link:  http://ainoodle.tech/2019/10/11/day-be-may-tinh-tap-to-mau-anh-den-trang-bang-mang-auto-encoder/
 
 #MìAI <br>
 Fanpage: http://facebook.com/miaiblog<br>

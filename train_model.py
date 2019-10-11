@@ -3,6 +3,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import *
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import Model
+#from tensorflow.keras.utils import multi_gpu_model
 from tensorflow.keras import applications
 from random import randint
 import cv2
@@ -22,9 +23,17 @@ def load_data(i):
 
 images_val, gt_images_val = load_data(10)
 
+
 resnet = applications.resnet50.ResNet50(weights=None, classes=365)
+resnet.summary()
 x = resnet.output
 model_tmp = Model(inputs = resnet.input, outputs = x)
+model_tmp.summary()
+
+#layer_3, layer_7, layer_13, layer_16 = model_tmp.get_layer('conv1_relu').output,\
+#                                       model_tmp.get_layer('conv2_block3_out').output, \
+#                                       model_tmp.get_layer('conv3_block4_out').output, \
+#                                       model_tmp.get_layer('conv4_block6_out').output
 
 layer_3, layer_7, layer_13, layer_16 = model_tmp.get_layer('activation_9').output, model_tmp.get_layer('activation_21').output, model_tmp.get_layer('activation_39').output, model_tmp.get_layer('activation_48').output
 
@@ -44,6 +53,8 @@ fcn5 = Conv2DTranspose(filters=2, kernel_size=16, strides=(4, 4), padding='same'
 relu255 = ReLU(max_value=255) (fcn5)
 
 model = Model(inputs = resnet.input, outputs = relu255)
+
+#model = multi_gpu_model(model, gpus=2)
 
 
 def root_mean_squared_error(y_true, y_pred):
@@ -80,12 +91,13 @@ filepath = 'models/model_12_1.h5'
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, save_weights_only=True, mode='min')
 callbacks_list = [checkpoint]
 
-model.load_weights(filepath)
+#model.load_weights(filepath)
 
 batch_size = 32
-nb_epochs = 150
+nb_epochs = 50
 
 for i in range(0, nb_epochs):
+    print("***Loop:",i)
     i = np.random.randint(1, 9)
     images, gt_images = load_data(i)
     model.fit_generator(generator=image_batch_generator(images, gt_images, batch_size),
